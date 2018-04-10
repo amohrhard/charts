@@ -50,3 +50,26 @@ Set postgres secret
 {{- template "fullname" . -}}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Set redis host
+*/}}
+{{- define "redis.host" -}}
+{{- if .Values.redis.enabled -}}
+{{- template "redis.fullname" . -}}
+{{- else -}}
+{{- .Values.redis.redisHost | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Set redis secret
+*/}}
+{{- define "redis.secret" -}}
+{{- if .Values.redis.enabled -}}
+{{- template "redis.fullname" . -}}
+{{- else -}}
+{{- template "fullname" . -}}
+{{- end -}}
+{{- end -}}
