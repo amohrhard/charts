@@ -45,7 +45,7 @@ spec:
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redis.fullname" . }}
+              name: {{ template "redis.secret" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
           value: {{ template "redis.host" . }}
@@ -66,5 +66,9 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+        - name: SENTRY_FILESTORE_BACKEND
+          value: {{ .Values.persistence.backend | quote }}
+        - name: SENTRY_FILESTORE_BUCKET_NAME
+          value: {{ .Values.persistence.bucketname | quote }}
         resources:
 {{ toYaml .Values.cron.resources | indent 12 }}

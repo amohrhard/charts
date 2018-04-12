@@ -20,6 +20,7 @@ spec:
       - name: {{ .Chart.Name }}-web
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["run", "web"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         env:
@@ -44,7 +45,7 @@ spec:
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redis.fullname" . }}
+              name: {{ template "redis.secret" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
           value: {{ template "redis.host" . }}
@@ -65,6 +66,17 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+        - name: SENTRY_FILESTORE_BACKEND
+          value: {{ .Values.persistence.backend | quote }}
+        - name: SENTRY_FILESTORE_BUCKET_NAME
+          value: {{ .Values.persistence.bucketname | quote }}
+        - name: SENTRY_GOOGLE_CLIENT_ID
+          value: {{ .Values.google.clientid | quote }}
+        - name: SENTRY_GOOGLE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: google-clientsecret
         volumeMounts:
         - mountPath: {{ .Values.persistence.filestore_dir }}
           name: sentry-data
